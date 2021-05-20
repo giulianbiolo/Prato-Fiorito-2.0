@@ -22,6 +22,11 @@ public class Board {
         this.grid.setMaxSize(SCREEN_WIDTH, SCREEN_HEIGTH);
     }
 
+    /**
+     *
+     * @param c
+     * @return
+     */
     public GridPane styleCells(Cell[][] c) {
         GridPane g = new GridPane();
         for (int row = 0; row < N_ROWS; row++) {
