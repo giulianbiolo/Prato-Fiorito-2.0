@@ -51,7 +51,11 @@ public class Cell {
     }
 
     void buttonPressed() {
-        button.setText(getValue());
+        if (getValue() == "0"){
+            button.setText("");
+        }else{
+            button.setText(getValue());
+        }
         if (isBomb()) { button.setStyle("-fx-text-fill: red;"); }  //TODO: usato il colore bianco solo per debug
         button.setEffect(pressed_shadow_effect);
         hidden = false;
@@ -62,55 +66,68 @@ public class Cell {
      * @param game
      */
     public void actionManager(Game game) {
-        button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                buttonPressed();
-                game.checkZeros(row, col);
+        button.setOnMouseClicked(event ->
+        {
+            if (event.getButton() == MouseButton.PRIMARY){
+                if (!(isFlagged())) {
+                    if (getValue() == "X") {
+                        System.out.println("GAME OVER");
+                        System.exit(0);
+                    }
+
+                }
+                    buttonPressed();
+                    game.checkZeros(row, col);
+
+            } else if (event.getButton() == MouseButton.SECONDARY){
+                setFlagged(!(isFlagged()));
             }
         });
+       /* button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if (!(isFlagged())){
+                    buttonPressed();
+                    game.checkZeros(row, col);
+                }
+
+            }
+        });*/
     }
 
     public InnerShadow getPressed_shadow_effect() {
         return pressed_shadow_effect;
     }
 
-    /**
-     *
-     * @return
-     */
+
     public boolean isBomb() {
         return this.value == 9;
     }
 
-    /**
-     *
-     * @return
-     */
+
     public boolean isHidden() {
         return hidden;
     }
 
-    /**
-     *
-     * @return
-     */
+
     public boolean isFlagged() {
         return flagged;
     }
 
-    /**
-     *
-     * @return
-     */
+    public void setFlagged(boolean flagged) {
+        this.flagged = flagged;
+        if(flagged){
+            button.setText("🚩");
+        }else{
+            button.setText("");
+        }
+    }
+
     public Button getButton() {
         return this.button;
     }
 
-    /**
-     *
-     * @return
-     */
+
     public String getValue() {
         if (this.isBomb()) {
             return "X";
@@ -131,19 +148,16 @@ public class Cell {
         this.value = value;
     }
 
-    /**
-     *
-     * @return
-     */
+
     public int getRow() {
         return this.row;
     }
 
-    /**
-     *
-     * @return
-     */
+
     public int getCol() {
         return this.col;
     }
+
+
+
 }
