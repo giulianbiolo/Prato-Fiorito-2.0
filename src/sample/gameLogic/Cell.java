@@ -32,7 +32,6 @@ public class Cell {
     public Cell(int value, int row, int col) {
         this.value = value;
         this.button = new Button("");
-        this.button.setFont(Font.font(FONT_DIR, FontWeight.BOLD, 16));
         this.hidden = true;
         this.flagged = false;
         this.row = row;
@@ -70,13 +69,16 @@ public class Cell {
     public void actionManager(Game game) {
         button.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                if (!isFlagged() && getValue().equals("X")) {
+                if (!isFlagged() && getValue().equals("⬤") && !game.getGameOver() && !game.getVictory()) {
                     game.gameOver();
                 }
-                buttonPressed();
-                game.checkZeros(row, col);
+                if(!game.getGameOver() && !game.getVictory()){
+                    buttonPressed();
+                    game.checkZeros(row, col);
+                    game.Victory();
+                }
             } else if (event.getButton() == MouseButton.SECONDARY) {
-                setFlagged(!(isFlagged()));
+                if(!game.getGameOver() && !game.getVictory()) setFlagged(!(isFlagged()));
             }
         });
     }
@@ -106,11 +108,13 @@ public class Cell {
 
     // TODO: Sistemare possibilmente l'emoji del flag
     public void setFlagged(boolean flagged) {
-        this.flagged = flagged;
-        if (flagged) {
-            button.setText("🚩");
-        } else {
-            button.setText("");
+        if(isHidden()) {
+            this.flagged = flagged;
+            if (flagged) {
+                button.setText("🚩");
+            } else {
+                button.setText("");
+            }
         }
     }
 
@@ -120,7 +124,7 @@ public class Cell {
 
     public String getValue() {
         if (this.isBomb()) {
-            return "X";
+            return "⬤";
         } else if (this.isFlagged()) {
             return "F";
         } else if (value == 0) {
@@ -140,5 +144,14 @@ public class Cell {
 
     public int getCol() {
         return this.col;
+    }
+
+    public void hackCell() {
+        if (getValue() == "0") {
+            button.setText("");
+        } else {
+            setTextColor();
+            button.setText(getValue());
+        }
     }
 }
