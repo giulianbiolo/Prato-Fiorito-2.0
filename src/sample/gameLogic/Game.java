@@ -5,7 +5,8 @@ import static sample.gameLogic.Constants.N_ROWS;
 
 public class Game {
     private Cell[][] cells;
-
+    private boolean gameover = false;
+    private boolean victory = false;
     public Game() {
         this.cells = new Cell[N_ROWS][N_COLS];
     }
@@ -76,13 +77,49 @@ public class Game {
 
     public void gameOver() {
         System.out.println("GAME OVER");
+        for (int row = 0; row < N_ROWS; row++) {
+            for (int col = 0; col < N_COLS; col++) {
+                if (cells[row][col].getValue().equals("⬤")) cells[row][col].buttonPressed();
+
+            }
+        }
+        gameover = true;
     }
 
+    public boolean getGameOver(){
+        return gameover;
+    }
+
+    public void Victory() {
+        boolean hidden = true;
+        for (int row = 0; row < N_ROWS; row++) {
+            for (int col = 0; col < N_COLS; col++) {
+                if (!cells[row][col].getValue().equals("⬤") && cells[row][col].isHidden()) hidden = false;
+            }
+        }
+        if (hidden){
+            System.out.println("WINNER");
+            victory = true;
+        }
+    }
+
+    public boolean getVictory(){
+        return victory;
+    }
+
+    public void Hack(){
+        for (int row = 0; row < N_ROWS; row++) {
+            for (int col = 0; col < N_COLS; col++) {
+                cells[row][col].hackCell();
+            }
+        }
+    }
     public Cell[][] getBoard() { return this.cells; }
     public Cell[][] generateBoard() {
         initCells();
         placeBombs();
         populateNumberedCells();
+        //Hack(); TODO: trucco magico magico per vincere in modo easy
         return getBoard();
     }
 }
